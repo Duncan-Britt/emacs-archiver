@@ -3,7 +3,7 @@
 ;; Copyright (C) 2024 Duncan Britt
 
 ;; Author: Duncan Britt <dbru997@gmail.com>
-;; Homepage: TODO
+;; Homepage: https://github.com/Duncan-Britt/emacs-archiver
 ;; Keywords: Graphics,images,themes
 
 ;; Package-Version: 0.0.1
@@ -26,7 +26,7 @@
 ;; merges the directory structure into the archive directory without duplicating or
 ;; clobbering the existing paths.
 
-;; Extant bug:
+;; Known issue
 ;; This package make the simplifying assumption that the immediate child headings will be
 ;; distinct under the parent heading.  That is, no duplicates.  For the author's use case,
 ;; it's a reasonable assumption, and handling the case where it's not true would take a lot

@@ -1,0 +1,27 @@
+* Emacs Archiver
+This package is bran new (as of September 19, 2024). Use with caution.
+
+Emacs Org mode provides a nice feature which is that you can archive a subheading to an archive file or heading. However, by default, the archived sub-trees are all inserted at the root level of the archive folder.
+
+This package provides the ability to archive a tree in org mode such that the branch structure of the org file is mirrored by the archive file, without creating duplicate branches or clobbering existing branches.
+* Installation
+Clone the repository in your preferred destination.
+#+begin_src sh
+  cd ~/path/to
+  git clone https://github.com/Duncan-Britt/emacs-archiver.git
+#+end_src
+
+Add the following to your config, specifying the path to the cloned repository and the path to your agenda archive file.
+#+begin_src emacs-lisp
+  (use-package archiver
+    :load-path "~/path/to/archiver/"
+    :after org
+    :init
+    (setq *archiver-agenda-archive-location*
+          (expand-file-name "~/path/to/your/agenda_archive.org"))
+    :bind
+    (:map org-mode-map
+          ("C-c C-x C-a" . archiver-archive-heading)))
+#+end_src
+* Known Issues
+This package make the simplifying assumption that the immediate child headings will be distinct under the parent heading. That is, no duplicates. For the author's use case, it's a reasonable assumption, and handling the case where it's not true would take a lot of effort.
