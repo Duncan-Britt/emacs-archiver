@@ -1,4 +1,7 @@
 * Emacs Archiver
+#+attr_org: :width 600
+[[./emacs-archiver.gif]]
+
 This package is bran new (as of September 19, 2024). Use with caution.
 
 Emacs Org mode provides a nice feature which is that you can archive a subheading to an archive file or heading. However, by default, the archived sub-trees are all inserted at the root level of the archive folder.

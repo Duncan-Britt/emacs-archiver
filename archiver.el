@@ -42,7 +42,7 @@
 
 (defun archiver-parse-current-heading ()
   "Parse the current heading and its body in a format suitable for the tree."
-  (let ((heading (substring-no-properties (org-get-heading t t t))) ;; Get heading without any stars
+  (let ((heading (substring-no-properties (org-get-heading nil nil t))) ;; Get heading without any stars
         (body (archiver-get-body-text)))
     (list heading body '())))
 
