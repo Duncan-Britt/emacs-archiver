@@ -1,6 +1,6 @@
 * Emacs Archiver
 #+attr_org: :width 600
-[[./emacs-archiver.gif]]
+[[./archiver.gif]]
 
 This package is bran new (as of September 19, 2024). Use with caution.
 

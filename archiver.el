@@ -95,8 +95,6 @@ Otherwise display an error message."
       *archiver-agenda-archive-location*
     (error "*archiver-agenda-archive-location* has not been specified")))
 
-(get-archive-location)
-
 (defun archiver-archive-heading ()
   "Write the current Org subtree to the archive file.
 Merge it with the existing tree."
@@ -106,13 +104,39 @@ Merge it with the existing tree."
       (when (not (member open-file org-agenda-files))
         (error "Cannot archive outside of agenda file"))
       (let ((tree-to-archive (archiver-get-ancestry-and-subtree)))
-        (with-current-buffer (find-file-noselect (get-archive-location))          
+        (with-current-buffer (find-file-noselect (get-archive-location))
           (let ((archive-tree (archiver-parse-buffer)))
             (erase-buffer)
             (goto-char (point-min))
             (insert (tree--to-org-string (tree--merge-subtree archive-tree
-                                                              tree-to-archive))))))))
+                                                              tree-to-archive)))
+            (save-buffer))))))
   (archiver--delete-subheading))
+
+(defun replace-file-contents-and-restore-points (filename new-content)
+  "Store points in all windows viewing FILENAME, replace the file's content with NEW-CONTENT,
+and restore the points in each window."
+  (let ((buffer (find-buffer-visiting filename))
+        (window-points '()))
+    (if (not buffer)
+        (message "File '%s' is not currently open in any buffer." filename)
+      ;; Store points for each window viewing the buffer
+      (dolist (window (window-list))
+        (when (eq (window-buffer window) buffer)
+          (push (cons window (window-point window)) window-points)))
+
+      ;; Replace file contents
+      (with-current-buffer buffer
+        (erase-buffer)
+        (insert new-content)
+        (save-buffer))
+
+      ;; Restore points in each window
+      (dolist (wp window-points)
+        (let ((window (car wp))
+              (point (cdr wp)))
+          (when (window-live-p window) ; Ensure the window is still valid
+            (set-window-point window point)))))))
 
 (defun archiver--delete-subheading ()
   "Remove the subheading at point from the buffer and save."  
