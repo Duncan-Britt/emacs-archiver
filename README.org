@@ -26,5 +26,5 @@ Add the following to your config, specifying the path to the cloned repository a
     (:map org-mode-map
           ("C-c C-x C-a" . archiver-archive-heading)))
 #+end_src
-* Known Issues
-This package make the simplifying assumption that the immediate child headings will be distinct under the parent heading. That is, no duplicates. For the author's use case, it's a reasonable assumption, and handling the case where it's not true would take a lot of effort.
+* Limitations
+This package make the simplifying assumption that the immediate child headings will be distinct under the parent heading. That is, no duplicates. For the author's use case, it's a reasonable assumption, and it's not obvious how the alternative case should be handled.

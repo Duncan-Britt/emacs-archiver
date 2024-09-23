@@ -236,12 +236,14 @@ Return nil of there is no heading"
 (defun tree--merge-subtree (tree st)
   "Return a new TREE with the subtree ST merged into the TREE.
 This only works if ST is a straight line tree."
-  (if-let (nth (tree--matching-child-idx st tree))
-      (tree--replace-nth-child tree
-                               (tree--merge-subtree (tree--get-nth-child tree nth)
-                                                    (tree--get-nth-child st 0))
-                               nth)
-    (tree--append-child tree st)))
+  (if st
+      (if-let (nth (tree--matching-child-idx st tree))
+          (tree--replace-nth-child tree
+                                   (tree--merge-subtree (tree--get-nth-child tree nth)
+                                                        (tree--get-nth-child st 0))
+                                   nth)
+        (tree--append-child tree st))
+    tree))
 
 (defun tree--get-nth-child (tree n)
   "Get child of TREE at index N."
