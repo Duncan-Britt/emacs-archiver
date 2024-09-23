@@ -71,6 +71,15 @@
           (push (archiver-parse-subtree-with-children) children)))
       (reverse children))))
 
+(defun archiver-parse-children-no-preheading-text ()
+  (save-excursion
+    (let ((children nil))
+      (when (re-search-forward "^\\*" nil t)
+        (push (archiver-parse-subtree-with-children) children)
+        (while (org-goto-sibling)
+          (push (archiver-parse-subtree-with-children) children)))
+      (reverse children))))
+
 (defun archiver-get-ancestry-and-subtree ()
   "Return the current Org mode subtree along with its ancestors in a nested list format."
   (interactive)
@@ -113,7 +122,10 @@ Merge it with the existing tree."
             (save-buffer))))))
   (archiver--delete-subheading))
 
-(defun replace-file-contents-and-restore-points (filename new-content)
+;; As of yet unused, and doesn't have all desired features.
+;; Ideally, this should also restore the fold state of the org buffer.
+;; But it doesn't really need to be done.
+(defun replace-file-contents-and-restore-points (filename new-content) 
   "Store points in all windows viewing FILENAME, replace the file's content with NEW-CONTENT,
 and restore the points in each window."
   (let ((buffer (find-buffer-visiting filename))
@@ -171,10 +183,36 @@ and restore the points in each window."
   (interactive)
   (save-excursion
     (goto-char (point-min))    
-    (let ((children (archiver-parse-children)))
+    (let ((children
+           (if (buffer-has-only-whitespace-before-first-heading-p)
+               (archiver-parse-children-no-preheading-text)
+             (archiver-parse-children))))
+      (message "%s" (list "ROOT"
+                          (archiver-get-pre-heading-text)
+                          children))
       (list "ROOT"
             (archiver-get-pre-heading-text)
             children))))
+
+(defun buffer-has-only-whitespace-before-first-heading-p ()
+  "Check if there is any non-whitespace text before the first heading in the current buffer.
+Return nil of there is no heading"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (if (re-search-forward "^[*]" nil t) ; Find the first heading
+        (let ((pre-heading-text (buffer-substring-no-properties (point-min) (match-beginning 0))))
+          (if (string-match-p "[^[:space:]\n]" pre-heading-text)
+              (progn
+                (message "There is non-whitespace text before the first heading.")
+                nil)
+            (progn
+              (message "There is no non-whitespace text before the first heading.")
+              t)))
+      (progn
+        (message "No headings found in the buffer.")
+        nil))))
+
 
 (defun archiver-get-pre-heading-text ()
   "Return the text before the first heading in the current Org buffer."
