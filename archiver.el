@@ -91,9 +91,9 @@
         (while (org-up-heading-safe)
           (push (archiver-parse-current-heading) ancestors))
         ;; Combine ancestors and subtree into the desired format        
-        (let ((tree (reduce (lambda (acc heading) (list (car heading) (cadr heading) (list acc)))
+        (let ((tree (seq-reduce (lambda (acc heading) (list (car heading) (cadr heading) (list acc)))
                             (reverse ancestors)
-                            :initial-value subtree)))
+                            subtree)))
           (message "%s" (prin1-to-string tree)) ;; Display the result
           tree)))))
 
@@ -176,7 +176,7 @@ and restore the points in each window."
 
 (defun tree--get-pre-heading-text (tree)
   "Return pre-heading text from TREE."
-  (second tree))
+  (cl-second tree))
 
 (defun archiver-parse-buffer ()
   "Parse the current org buffer into a tree."
@@ -256,7 +256,7 @@ This only works if ST is a straight line tree."
 (defun tree--matching-child-idx-rec (heading children idx)
   "Return the IDX of the child in CHILDREN matching HEADING or NIL."
   (cond ((null children) nil)
-        ((string= heading (tree--get-heading (first children)))
+        ((string= heading (tree--get-heading (cl-first children)))
          idx)
         (t (tree--matching-child-idx-rec heading (cdr children) (1+ idx)))))
 
@@ -269,15 +269,15 @@ This only works if ST is a straight line tree."
 
 (defun tree--get-heading (tree)
   "Return heading of TREE."
-  (first tree))
+  (cl-first tree))
 
 (defun tree--get-body (tree)
   "Return body of TREE."
-  (second tree))
+  (cl-second tree))
 
 (defun tree--get-children (tree)
   "Return children of TREE as list of trees."
-  (third tree))
+  (cl-third tree))
 
 (defun tree= (t1 t2)
   "Return non-NIL if T1 = T2, else NIL."  
@@ -301,8 +301,8 @@ This only works if ST is a straight line tree."
   "HEADINGS: \\='(\"a\" \"b\" \"c\") => \\='(\"a\" \"\" ((\"b\" \"\" (\"c\" \"\" ()))))."
   (cond ((null headings) nil)
         ((= 1 (length headings))
-         (list (first headings) "" nil))
-        (t (list (first headings) "" (list (treeify (cdr headings)))))))
+         (list (cl-first headings) "" nil))
+        (t (list (cl-first headings) "" (list (treeify (cdr headings)))))))
 
 ;; (defvar test-tree '("R" "body" (("a" "" (("b" "" (("h" "" ())
 ;;                                                   ("c" "" (("i" "" ())
