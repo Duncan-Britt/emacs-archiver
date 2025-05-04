@@ -90,7 +90,7 @@
       (let ((ancestors '()))
         (while (org-up-heading-safe)
           (push (archiver-parse-current-heading) ancestors))
-        ;; Combine ancestors and subtree into the desired format        
+        ;; Combine ancestors and subtree into the desired format
         (let ((tree (seq-reduce (lambda (acc heading) (list (car heading) (cadr heading) (list acc)))
                             (reverse ancestors)
                             subtree)))
@@ -109,8 +109,10 @@ Otherwise display an error message."
 Merge it with the existing tree."
   (interactive)
   (save-excursion
-    (let ((open-file (buffer-file-name (window-buffer (minibuffer-selected-window)))))
-      (when (not (member open-file org-agenda-files))
+    (let* ((open-file (buffer-file-name (window-buffer (minibuffer-selected-window))))
+           (agenda-files (mapcar #'expand-file-name org-agenda-files))
+           (open-file-fullpath (expand-file-name open-file)))
+      (when (not (member open-file-fullpath agenda-files))
         (error "Cannot archive outside of agenda file"))
       (let ((tree-to-archive (archiver-get-ancestry-and-subtree)))
         (with-current-buffer (find-file-noselect (get-archive-location))
@@ -125,7 +127,7 @@ Merge it with the existing tree."
 ;; As of yet unused, and doesn't have all desired features.
 ;; Ideally, this should also restore the fold state of the org buffer.
 ;; But it doesn't really need to be done.
-(defun replace-file-contents-and-restore-points (filename new-content) 
+(defun replace-file-contents-and-restore-points (filename new-content)
   "Store points in all windows viewing FILENAME, replace the file's content with NEW-CONTENT,
 and restore the points in each window."
   (let ((buffer (find-buffer-visiting filename))
@@ -151,10 +153,10 @@ and restore the points in each window."
             (set-window-point window point)))))))
 
 (defun archiver--delete-subheading ()
-  "Remove the subheading at point from the buffer and save."  
-  (save-excursion    
-    (org-back-to-heading t)    
-    (org-cut-subtree)    
+  "Remove the subheading at point from the buffer and save."
+  (save-excursion
+    (org-back-to-heading t)
+    (org-cut-subtree)
     (save-buffer)))
 
 
@@ -182,7 +184,7 @@ and restore the points in each window."
   "Parse the current org buffer into a tree."
   (interactive)
   (save-excursion
-    (goto-char (point-min))    
+    (goto-char (point-min))
     (let ((children
            (if (buffer-has-only-whitespace-before-first-heading-p)
                (archiver-parse-children-no-preheading-text)
@@ -280,7 +282,7 @@ This only works if ST is a straight line tree."
   (cl-third tree))
 
 (defun tree= (t1 t2)
-  "Return non-NIL if T1 = T2, else NIL."  
+  "Return non-NIL if T1 = T2, else NIL."
   (cond ((and (null t1)
               (null t2))
          t)
