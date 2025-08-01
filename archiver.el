@@ -328,6 +328,7 @@ This only works if ST is a straight line tree."
 (defvar my-archive-dir "~/archive"
   "Directory where files will be archived.")
 
+;;;###autoload
 (defun archiver-archive-open-file ()
   "Move the current file to the archive directory."
   (interactive)
