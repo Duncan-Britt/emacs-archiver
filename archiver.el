@@ -104,6 +104,7 @@ Otherwise display an error message."
       *archiver-agenda-archive-location*
     (error "*archiver-agenda-archive-location* has not been specified")))
 
+;;;###autoload
 (defun archiver-archive-heading ()
   "Write the current Org subtree to the archive file.
 Merge it with the existing tree."
