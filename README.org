@@ -16,15 +16,13 @@ Clone the repository in your preferred destination.
 
 Add the following to your config, specifying the path to the cloned repository and the path to your agenda archive file.
 #+begin_src emacs-lisp
-  (use-package archiver
-    :load-path "~/path/to/archiver/"
-    :after org
-    :init
-    (setq *archiver-agenda-archive-location*
-          (expand-file-name "~/path/to/your/agenda_archive.org"))
-    :bind
-    (:map org-mode-map
-          ("C-c C-x C-a" . archiver-archive-heading)))
+(use-package archiver
+  :vc (:url "https://github.com/Duncan-Britt/emacs-archiver")
+  :after org
+  :custom (*archiver-agenda-archive-location*
+           (expand-file-name "~/path/to/your/agenda_file.org_archive"))
+  :bind (:map org-mode-map ("C-c C-x C-a" . archiver-archive-heading)))
 #+end_src
+
 * Limitations
 This package make the simplifying assumption that the immediate child headings will be distinct under the parent heading. That is, no duplicates. For the author's use case, it's a reasonable assumption, and it's not obvious how the alternative case should be handled.
