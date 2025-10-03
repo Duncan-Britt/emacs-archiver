@@ -14,7 +14,7 @@ Clone the repository in your preferred destination.
   git clone https://github.com/Duncan-Britt/emacs-archiver.git
 #+end_src
 
-Add the following to your config, specifying the path to the cloned repository and the path to your agenda archive file.
+Add the following to your config, specifying the path to your agenda archive file.
 #+begin_src emacs-lisp
 (use-package archiver
   :vc (:url "https://github.com/Duncan-Britt/emacs-archiver")
